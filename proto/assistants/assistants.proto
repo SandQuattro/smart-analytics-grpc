@@ -39,6 +39,10 @@ message AssistantFiles {
   bool has_more = 5;
 }
 
+message ThreadRequest {
+  string thread_id = 1;
+}
+
 // ответ DeleteAssistantFile
 message DeletedObject {
   string id = 1;
@@ -60,4 +64,5 @@ service AssistantService {
   rpc DeleteAssistantFile(AssistantFileRequest) returns (DeletedObject);
   rpc LinkFileToAssistant(AssistantFileRequest) returns (AssistantFileData);
   rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
+  rpc GetThread(ThreadRequest) returns (AssistantObject);
 }

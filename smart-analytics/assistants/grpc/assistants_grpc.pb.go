@@ -24,6 +24,7 @@ const (
 	AssistantService_DeleteAssistantFile_FullMethodName = "/assistants.AssistantService/DeleteAssistantFile"
 	AssistantService_LinkFileToAssistant_FullMethodName = "/assistants.AssistantService/LinkFileToAssistant"
 	AssistantService_CreateThread_FullMethodName        = "/assistants.AssistantService/CreateThread"
+	AssistantService_GetThread_FullMethodName           = "/assistants.AssistantService/GetThread"
 )
 
 // AssistantServiceClient is the client API for AssistantService service.
@@ -34,6 +35,7 @@ type AssistantServiceClient interface {
 	DeleteAssistantFile(ctx context.Context, in *AssistantFileRequest, opts ...grpc.CallOption) (*DeletedObject, error)
 	LinkFileToAssistant(ctx context.Context, in *AssistantFileRequest, opts ...grpc.CallOption) (*AssistantFileData, error)
 	CreateThread(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AssistantObject, error)
+	GetThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*AssistantObject, error)
 }
 
 type assistantServiceClient struct {
@@ -80,6 +82,15 @@ func (c *assistantServiceClient) CreateThread(ctx context.Context, in *emptypb.E
 	return out, nil
 }
 
+func (c *assistantServiceClient) GetThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*AssistantObject, error) {
+	out := new(AssistantObject)
+	err := c.cc.Invoke(ctx, AssistantService_GetThread_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AssistantServiceServer is the server API for AssistantService service.
 // All implementations must embed UnimplementedAssistantServiceServer
 // for forward compatibility
@@ -88,6 +99,7 @@ type AssistantServiceServer interface {
 	DeleteAssistantFile(context.Context, *AssistantFileRequest) (*DeletedObject, error)
 	LinkFileToAssistant(context.Context, *AssistantFileRequest) (*AssistantFileData, error)
 	CreateThread(context.Context, *emptypb.Empty) (*AssistantObject, error)
+	GetThread(context.Context, *ThreadRequest) (*AssistantObject, error)
 	mustEmbedUnimplementedAssistantServiceServer()
 }
 
@@ -106,6 +118,9 @@ func (UnimplementedAssistantServiceServer) LinkFileToAssistant(context.Context, 
 }
 func (UnimplementedAssistantServiceServer) CreateThread(context.Context, *emptypb.Empty) (*AssistantObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateThread not implemented")
+}
+func (UnimplementedAssistantServiceServer) GetThread(context.Context, *ThreadRequest) (*AssistantObject, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetThread not implemented")
 }
 func (UnimplementedAssistantServiceServer) mustEmbedUnimplementedAssistantServiceServer() {}
 
@@ -192,6 +207,24 @@ func _AssistantService_CreateThread_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AssistantService_GetThread_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ThreadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AssistantServiceServer).GetThread(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AssistantService_GetThread_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AssistantServiceServer).GetThread(ctx, req.(*ThreadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AssistantService_ServiceDesc is the grpc.ServiceDesc for AssistantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -214,6 +247,10 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateThread",
 			Handler:    _AssistantService_CreateThread_Handler,
+		},
+		{
+			MethodName: "GetThread",
+			Handler:    _AssistantService_GetThread_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
