@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
 
 package assistants;
 
@@ -50,7 +51,7 @@ message AssistantObject {
   string id = 1;
   string object = 2;
   int32  createdAt = 3;
-  string  metadata = 4;
+  google.protobuf.Any  metadata = 4;
 }
 
 // Сервис для работы с файлами
