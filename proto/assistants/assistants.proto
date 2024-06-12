@@ -65,4 +65,5 @@ service AssistantService {
   rpc LinkFileToAssistant(AssistantFileRequest) returns (AssistantFileData);
   rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
   rpc GetThread(ThreadRequest) returns (AssistantObject);
+  rpc DeleteThread(ThreadRequest) returns (DeletedObject);
 }
