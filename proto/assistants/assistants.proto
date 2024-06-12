@@ -7,6 +7,9 @@ package assistants;
 
 option go_package = "smart-analytics/assistants/grpc";
 
+message Pong {
+  bool alive = 1;
+}
 // Запрос, включающий AssistantID
 message AssistantRequest {
   string assistant_id = 1;
@@ -60,6 +63,7 @@ message AssistantObject {
 
 // Сервис для работы с файлами
 service AssistantService {
+  rpc Ping(google.protobuf.Empty) returns (Pong);
   rpc ListAssistantFiles(AssistantRequest) returns (ListAssistantFilesResponse);
   rpc DeleteAssistantFile(AssistantFileRequest) returns (DeletedObject);
   rpc LinkFileToAssistant(AssistantFileRequest) returns (AssistantFileData);
