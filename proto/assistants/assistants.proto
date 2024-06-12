@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package assistants;
 
 option go_package = "smart-analytics/assistants/grpc";
@@ -7,6 +9,11 @@ option go_package = "smart-analytics/assistants/grpc";
 // Запрос, включающий AssistantID
 message AssistantRequest {
   string assistant_id = 1;
+}
+
+message AssistantFileRequest {
+  string assistant_id = 1;
+  string file_id = 2;
 }
 
 // Ответ с AssistantFiles
@@ -31,11 +38,6 @@ message AssistantFiles {
   bool has_more = 5;
 }
 
-message AssistantFileRequest {
-  string assistant_id = 1;
-  string file_id = 2;
-}
-
 // ответ DeleteAssistantFile
 message DeletedObject {
   string id = 1;
@@ -43,9 +45,18 @@ message DeletedObject {
   bool  deleted = 3;
 }
 
+// ответ AssistantObject
+message AssistantObject {
+  string id = 1;
+  string object = 2;
+  int32  createdAt = 3;
+  string  metadata = 4;
+}
+
 // Сервис для работы с файлами
 service AssistantService {
   rpc ListAssistantFiles(AssistantRequest) returns (ListAssistantFilesResponse);
   rpc DeleteAssistantFile(AssistantFileRequest) returns (DeletedObject);
   rpc LinkFileToAssistant(AssistantFileRequest) returns (AssistantFileData);
+  rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
 }
