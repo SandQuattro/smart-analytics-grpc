@@ -59,6 +59,41 @@ message AssistantObject {
   google.protobuf.Struct  metadata = 4;
 }
 
+message CreateThreadRunRequest {
+  string thread_id = 1;
+  string instruction = 2;
+  string assistant_id = 3;
+}
+
+message LastError {
+  string code = 1;
+  string message = 2;
+}
+
+message ThreadRunTools {
+  string type = 1;
+}
+
+message ThreadRun {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp  createdAt = 3;
+  google.protobuf.Struct  metadata = 4;
+  string assistant_id = 5;
+  string thread_id = 6;
+  string status = 7;
+  google.protobuf.Timestamp started_at = 8;
+  google.protobuf.Timestamp expires_at = 9;
+  google.protobuf.Timestamp cancelled_at = 10;
+  google.protobuf.Timestamp failed_at = 11;
+  google.protobuf.Timestamp completed_at = 12;
+  LastError last_error = 13;
+  string model = 14;
+  string instructions = 15;
+  repeated ThreadRunTools tools = 16;
+  repeated string file_ids = 17;
+}
+
 // Сервис для работы с файлами
 service AssistantService {
   rpc ListAssistantFiles(AssistantRequest) returns (ListAssistantFilesResponse);
@@ -67,4 +102,5 @@ service AssistantService {
   rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
   rpc GetThread(ThreadRequest) returns (AssistantObject);
   rpc DeleteThread(ThreadRequest) returns (DeletedObject);
+  rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
 }
