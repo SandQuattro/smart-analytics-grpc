@@ -27,6 +27,7 @@ const (
 	AssistantService_GetThread_FullMethodName           = "/assistants.AssistantService/GetThread"
 	AssistantService_DeleteThread_FullMethodName        = "/assistants.AssistantService/DeleteThread"
 	AssistantService_CreateThreadRun_FullMethodName     = "/assistants.AssistantService/CreateThreadRun"
+	AssistantService_GetThreadRuns_FullMethodName       = "/assistants.AssistantService/GetThreadRuns"
 )
 
 // AssistantServiceClient is the client API for AssistantService service.
@@ -40,6 +41,7 @@ type AssistantServiceClient interface {
 	GetThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*AssistantObject, error)
 	DeleteThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*DeletedObject, error)
 	CreateThreadRun(ctx context.Context, in *CreateThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
+	GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error)
 }
 
 type assistantServiceClient struct {
@@ -113,6 +115,38 @@ func (c *assistantServiceClient) CreateThreadRun(ctx context.Context, in *Create
 	return out, nil
 }
 
+func (c *assistantServiceClient) GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[0], AssistantService_GetThreadRuns_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &assistantServiceGetThreadRunsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type AssistantService_GetThreadRunsClient interface {
+	Recv() (*ThreadRun, error)
+	grpc.ClientStream
+}
+
+type assistantServiceGetThreadRunsClient struct {
+	grpc.ClientStream
+}
+
+func (x *assistantServiceGetThreadRunsClient) Recv() (*ThreadRun, error) {
+	m := new(ThreadRun)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AssistantServiceServer is the server API for AssistantService service.
 // All implementations must embed UnimplementedAssistantServiceServer
 // for forward compatibility
@@ -124,6 +158,7 @@ type AssistantServiceServer interface {
 	GetThread(context.Context, *ThreadRequest) (*AssistantObject, error)
 	DeleteThread(context.Context, *ThreadRequest) (*DeletedObject, error)
 	CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error)
+	GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error
 	mustEmbedUnimplementedAssistantServiceServer()
 }
 
@@ -151,6 +186,9 @@ func (UnimplementedAssistantServiceServer) DeleteThread(context.Context, *Thread
 }
 func (UnimplementedAssistantServiceServer) CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateThreadRun not implemented")
+}
+func (UnimplementedAssistantServiceServer) GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetThreadRuns not implemented")
 }
 func (UnimplementedAssistantServiceServer) mustEmbedUnimplementedAssistantServiceServer() {}
 
@@ -291,6 +329,27 @@ func _AssistantService_CreateThreadRun_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AssistantService_GetThreadRuns_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ThreadRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AssistantServiceServer).GetThreadRuns(m, &assistantServiceGetThreadRunsServer{stream})
+}
+
+type AssistantService_GetThreadRunsServer interface {
+	Send(*ThreadRun) error
+	grpc.ServerStream
+}
+
+type assistantServiceGetThreadRunsServer struct {
+	grpc.ServerStream
+}
+
+func (x *assistantServiceGetThreadRunsServer) Send(m *ThreadRun) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // AssistantService_ServiceDesc is the grpc.ServiceDesc for AssistantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -327,6 +386,12 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AssistantService_CreateThreadRun_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetThreadRuns",
+			Handler:       _AssistantService_GetThreadRuns_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "proto/assistants/assistants.proto",
 }
