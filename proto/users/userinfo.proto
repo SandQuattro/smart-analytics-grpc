@@ -10,6 +10,13 @@ message UserRequest {
   int64 id = 1;
 }
 
+message UserInfoUpdateRequest {
+  int64 id = 1;
+  string name = 2;
+  string nickname = 3;
+  string avatar = 4;
+}
+
 message UserInfo {
   int64 id = 1;
   string auth_system = 2;
@@ -28,4 +35,5 @@ message UserInfo {
 // Сервис для работы с пользовательскими данными
 service UserService {
   rpc GetUserInfo(UserRequest) returns (UserInfo);
+  rpc UpdateUserInfo(UserInfoUpdateRequest) returns (UserInfo);
 }
