@@ -44,6 +44,11 @@ message ThreadRequest {
   string thread_id = 1;
 }
 
+message ThreadRunRequest {
+  string thread_id = 1;
+  string run_id = 2;
+}
+
 // ответ DeleteAssistantFile
 message DeletedObject {
   string id = 1;
@@ -65,33 +70,83 @@ message CreateThreadRunRequest {
   string assistant_id = 3;
 }
 
+message ThreadRunTools {
+  string type = 1;
+}
+
+message Function {
+  string name = 1;
+  optional string arguments = 2;
+}
+
+message ToolCalls {
+  string id = 1;
+  string type = 2;
+  Function function = 3;
+}
+
+message SubmitToolOutputs {
+  repeated ToolCalls tool_calls = 1;
+}
+
+message RequiredAction {
+  string type = 1;
+  SubmitToolOutputs submit_tool_outputs = 2;
+}
+
 message LastError {
   string code = 1;
   string message = 2;
 }
 
-message ThreadRunTools {
+message IncompleteDetails {
+  string reason = 1;
+}
+
+message Usage {
+  uint32 completion_tokens = 1;
+  uint32 prompt_tokens = 2;
+  uint32 total_tokens = 3;
+}
+
+message TruncationStrategy {
   string type = 1;
+  optional uint32 last_messages = 2;
+}
+
+message ToolChoice {
+  string type = 1;
+  Function function = 2;
 }
 
 message ThreadRun {
   string id = 1;
   string object = 2;
   google.protobuf.Timestamp  createdAt = 3;
-  google.protobuf.Struct  metadata = 4;
+  string thread_id = 4;
   string assistant_id = 5;
-  string thread_id = 6;
-  string status = 7;
-  google.protobuf.Timestamp started_at = 8;
-  google.protobuf.Timestamp expires_at = 9;
-  google.protobuf.Timestamp cancelled_at = 10;
-  google.protobuf.Timestamp failed_at = 11;
-  google.protobuf.Timestamp completed_at = 12;
-  LastError last_error = 13;
-  string model = 14;
-  string instructions = 15;
-  repeated ThreadRunTools tools = 16;
-  repeated string file_ids = 17;
+  string status = 6;
+  optional RequiredAction required_action = 7;
+  optional LastError last_error = 8;
+  optional google.protobuf.Timestamp expires_at = 9;
+  optional google.protobuf.Timestamp started_at = 10;
+  optional google.protobuf.Timestamp cancelled_at = 11;
+  optional google.protobuf.Timestamp failed_at = 12;
+  optional google.protobuf.Timestamp completed_at = 13;
+  optional IncompleteDetails incomplete_details = 14;
+  string model = 15;
+  string instructions = 16;
+  repeated ThreadRunTools tools = 17;
+  google.protobuf.Struct  metadata = 18;
+  optional Usage usage = 19;
+  optional uint32 temperature = 20;
+  optional uint32 top_p = 21;
+  optional uint32 max_prompt_tokens = 22;
+  optional uint32 max_completion_tokens = 23;
+  TruncationStrategy truncation_strategy = 24;
+  optional  ToolChoice tool_choice = 25;
+  bool parallel_tool_calls = 26;
+  string    response_format = 27;
 }
 
 // Сервис для работы с файлами
@@ -104,4 +159,5 @@ service AssistantService {
   rpc DeleteThread(ThreadRequest) returns (DeletedObject);
   rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
   rpc GetThreadRuns(ThreadRequest) returns (stream ThreadRun);
+  rpc GetRunInformation(ThreadRunRequest) returns (ThreadRun);
 }

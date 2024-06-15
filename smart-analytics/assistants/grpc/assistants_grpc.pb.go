@@ -28,6 +28,7 @@ const (
 	AssistantService_DeleteThread_FullMethodName        = "/assistants.AssistantService/DeleteThread"
 	AssistantService_CreateThreadRun_FullMethodName     = "/assistants.AssistantService/CreateThreadRun"
 	AssistantService_GetThreadRuns_FullMethodName       = "/assistants.AssistantService/GetThreadRuns"
+	AssistantService_GetRunInformation_FullMethodName   = "/assistants.AssistantService/GetRunInformation"
 )
 
 // AssistantServiceClient is the client API for AssistantService service.
@@ -42,6 +43,7 @@ type AssistantServiceClient interface {
 	DeleteThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*DeletedObject, error)
 	CreateThreadRun(ctx context.Context, in *CreateThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
 	GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error)
+	GetRunInformation(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
 }
 
 type assistantServiceClient struct {
@@ -147,6 +149,15 @@ func (x *assistantServiceGetThreadRunsClient) Recv() (*ThreadRun, error) {
 	return m, nil
 }
 
+func (c *assistantServiceClient) GetRunInformation(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error) {
+	out := new(ThreadRun)
+	err := c.cc.Invoke(ctx, AssistantService_GetRunInformation_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AssistantServiceServer is the server API for AssistantService service.
 // All implementations must embed UnimplementedAssistantServiceServer
 // for forward compatibility
@@ -159,6 +170,7 @@ type AssistantServiceServer interface {
 	DeleteThread(context.Context, *ThreadRequest) (*DeletedObject, error)
 	CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error)
 	GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error
+	GetRunInformation(context.Context, *ThreadRunRequest) (*ThreadRun, error)
 	mustEmbedUnimplementedAssistantServiceServer()
 }
 
@@ -189,6 +201,9 @@ func (UnimplementedAssistantServiceServer) CreateThreadRun(context.Context, *Cre
 }
 func (UnimplementedAssistantServiceServer) GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetThreadRuns not implemented")
+}
+func (UnimplementedAssistantServiceServer) GetRunInformation(context.Context, *ThreadRunRequest) (*ThreadRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRunInformation not implemented")
 }
 func (UnimplementedAssistantServiceServer) mustEmbedUnimplementedAssistantServiceServer() {}
 
@@ -350,6 +365,24 @@ func (x *assistantServiceGetThreadRunsServer) Send(m *ThreadRun) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _AssistantService_GetRunInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ThreadRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AssistantServiceServer).GetRunInformation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AssistantService_GetRunInformation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AssistantServiceServer).GetRunInformation(ctx, req.(*ThreadRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AssistantService_ServiceDesc is the grpc.ServiceDesc for AssistantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -384,6 +417,10 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateThreadRun",
 			Handler:    _AssistantService_CreateThreadRun_Handler,
+		},
+		{
+			MethodName: "GetRunInformation",
+			Handler:    _AssistantService_GetRunInformation_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
