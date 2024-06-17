@@ -68,6 +68,91 @@ message AssistantObject {
   google.protobuf.Struct  metadata = 4;
 }
 
+message GetMessageRequest {
+  string message_id = 1;
+  string thread_id = 2;
+  string run_id = 3;
+}
+
+message CreateMessageRequest {
+  string thread_id = 1;
+  string prompt = 2;
+  repeated string files = 3;
+}
+
+message File {
+  string file_id = 1;
+}
+
+message Annotations {
+  string type = 1;
+  string text = 2;
+  oneof file {
+    File file_citation = 3;
+    File file_path = 4;
+  }
+  uint32 start_index = 5;
+  uint32 end_index = 6;
+}
+
+message TextContent {
+  string value = 1;
+  repeated Annotations annotations = 2;
+}
+
+message ImageFileContent {
+  string file_id = 1;
+  string detail = 2;
+}
+
+message ImageUrlContent {
+  string url = 1;
+  string detail = 2;
+}
+
+message MessageContent {
+  string type = 1;
+  oneof content {
+    TextContent text = 2;
+    ImageFileContent image_file = 3;
+    ImageUrlContent image_url = 4;
+  }
+}
+
+message Tools {
+  string type = 1;
+}
+
+message Attachments {
+  string file_id = 1;
+  repeated Tools tools = 2;
+}
+
+message AssistantMessage {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created_at = 3;
+  string thread_id = 4;
+  string status = 5;
+  optional IncompleteDetails incomplete_details = 6;
+  optional google.protobuf.Timestamp completed_at = 7;
+  optional google.protobuf.Timestamp incomplete_at = 8;
+  string role = 9;
+  MessageContent content = 10;
+  optional string assistant_id = 11;
+  optional string run_id = 12;
+  repeated Attachments attachments = 13;
+  optional google.protobuf.Struct metadata = 14;
+}
+
+message ListAssistantMessagesResponse {
+  string object = 1;
+  repeated AssistantMessage data = 2;
+  string  first_id = 3;
+  string  last_id = 4;
+  bool  has_more = 5;
+}
+
 message CreateThreadRunRequest {
   string thread_id = 1;
   string instruction = 2;
@@ -165,4 +250,7 @@ service AssistantService {
   rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
   rpc GetThreadRuns(ThreadRequest) returns (stream ThreadRun);
   rpc GetRunInformation(ThreadRunRequest) returns (ThreadRun);
+  rpc ListMessagesInThread(ThreadRequest) returns (ListAssistantMessagesResponse);
+  rpc CreateMessageInThread(CreateMessageRequest) returns (AssistantMessage);
+  rpc GetMessage(GetMessageRequest) returns (AssistantMessage);
 }
