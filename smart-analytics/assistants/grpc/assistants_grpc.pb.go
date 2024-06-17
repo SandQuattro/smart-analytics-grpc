@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	AssistantService_DeleteFile_FullMethodName          = "/assistants.AssistantService/DeleteFile"
 	AssistantService_ListAssistantFiles_FullMethodName  = "/assistants.AssistantService/ListAssistantFiles"
 	AssistantService_DeleteAssistantFile_FullMethodName = "/assistants.AssistantService/DeleteAssistantFile"
 	AssistantService_LinkFileToAssistant_FullMethodName = "/assistants.AssistantService/LinkFileToAssistant"
@@ -35,6 +36,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AssistantServiceClient interface {
+	DeleteFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*DeletedObject, error)
 	ListAssistantFiles(ctx context.Context, in *AssistantRequest, opts ...grpc.CallOption) (*ListAssistantFilesResponse, error)
 	DeleteAssistantFile(ctx context.Context, in *AssistantFileRequest, opts ...grpc.CallOption) (*DeletedObject, error)
 	LinkFileToAssistant(ctx context.Context, in *AssistantFileRequest, opts ...grpc.CallOption) (*AssistantFileData, error)
@@ -52,6 +54,15 @@ type assistantServiceClient struct {
 
 func NewAssistantServiceClient(cc grpc.ClientConnInterface) AssistantServiceClient {
 	return &assistantServiceClient{cc}
+}
+
+func (c *assistantServiceClient) DeleteFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*DeletedObject, error) {
+	out := new(DeletedObject)
+	err := c.cc.Invoke(ctx, AssistantService_DeleteFile_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *assistantServiceClient) ListAssistantFiles(ctx context.Context, in *AssistantRequest, opts ...grpc.CallOption) (*ListAssistantFilesResponse, error) {
@@ -162,6 +173,7 @@ func (c *assistantServiceClient) GetRunInformation(ctx context.Context, in *Thre
 // All implementations must embed UnimplementedAssistantServiceServer
 // for forward compatibility
 type AssistantServiceServer interface {
+	DeleteFile(context.Context, *FileRequest) (*DeletedObject, error)
 	ListAssistantFiles(context.Context, *AssistantRequest) (*ListAssistantFilesResponse, error)
 	DeleteAssistantFile(context.Context, *AssistantFileRequest) (*DeletedObject, error)
 	LinkFileToAssistant(context.Context, *AssistantFileRequest) (*AssistantFileData, error)
@@ -178,6 +190,9 @@ type AssistantServiceServer interface {
 type UnimplementedAssistantServiceServer struct {
 }
 
+func (UnimplementedAssistantServiceServer) DeleteFile(context.Context, *FileRequest) (*DeletedObject, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteFile not implemented")
+}
 func (UnimplementedAssistantServiceServer) ListAssistantFiles(context.Context, *AssistantRequest) (*ListAssistantFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAssistantFiles not implemented")
 }
@@ -216,6 +231,24 @@ type UnsafeAssistantServiceServer interface {
 
 func RegisterAssistantServiceServer(s grpc.ServiceRegistrar, srv AssistantServiceServer) {
 	s.RegisterService(&AssistantService_ServiceDesc, srv)
+}
+
+func _AssistantService_DeleteFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AssistantServiceServer).DeleteFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AssistantService_DeleteFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AssistantServiceServer).DeleteFile(ctx, req.(*FileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _AssistantService_ListAssistantFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -390,6 +423,10 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "assistants.AssistantService",
 	HandlerType: (*AssistantServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DeleteFile",
+			Handler:    _AssistantService_DeleteFile_Handler,
+		},
 		{
 			MethodName: "ListAssistantFiles",
 			Handler:    _AssistantService_ListAssistantFiles_Handler,

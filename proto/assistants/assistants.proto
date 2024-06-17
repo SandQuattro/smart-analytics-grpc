@@ -8,6 +8,10 @@ package assistants;
 
 option go_package = "smart-analytics/assistants/grpc";
 
+message FileRequest {
+  string file_id = 1;
+}
+
 // Запрос, включающий AssistantID
 message AssistantRequest {
   string assistant_id = 1;
@@ -151,6 +155,7 @@ message ThreadRun {
 
 // Сервис для работы с файлами
 service AssistantService {
+  rpc DeleteFile(FileRequest) returns (DeletedObject);
   rpc ListAssistantFiles(AssistantRequest) returns (ListAssistantFilesResponse);
   rpc DeleteAssistantFile(AssistantFileRequest) returns (DeletedObject);
   rpc LinkFileToAssistant(AssistantFileRequest) returns (AssistantFileData);
