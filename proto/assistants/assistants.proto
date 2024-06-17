@@ -138,7 +138,7 @@ message AssistantMessage {
   optional google.protobuf.Timestamp completed_at = 7;
   optional google.protobuf.Timestamp incomplete_at = 8;
   string role = 9;
-  MessageContent content = 10;
+  repeated MessageContent content = 10;
   optional string assistant_id = 11;
   optional string run_id = 12;
   repeated Attachments attachments = 13;
