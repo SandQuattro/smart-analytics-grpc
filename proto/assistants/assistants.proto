@@ -16,12 +16,13 @@ message FileInfo {
   string name = 1;
   string size = 2;
   string content_type = 3;
+  map<string, string> headers = 4;
 }
 
 message FileStreamResponse {
   oneof response {
     FileInfo info = 1;
-    bytes chunk_data = 2;
+    bytes chunk_data = 3;
   }
 }
 
