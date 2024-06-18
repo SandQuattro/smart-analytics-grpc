@@ -8,6 +8,22 @@ package assistants;
 
 option go_package = "smart-analytics/assistants/grpc";
 
+message FileUploadRequest {
+  oneof request {
+    FileInfo info = 1;
+    bytes chunk_data = 2;
+  }
+}
+
+message FileUploadResponse {
+  string id = 1;
+  uint64 bytes = 2;
+  uint32 created_at = 3;
+  string filename = 4;
+  string object = 5;
+  string purpose = 6;
+}
+
 message FileRequest {
   string file_id = 1;
 }
@@ -254,6 +270,7 @@ message ThreadRun {
 
 // Сервис для работы с файлами
 service AssistantService {
+  rpc UploadFile(stream FileUploadRequest) returns (FileUploadResponse);
   rpc DownloadFile(FileRequest) returns (stream FileStreamResponse);
   rpc DeleteFile(FileRequest) returns (DeletedObject);
   rpc ListAssistantFiles(AssistantRequest) returns (ListAssistantFilesResponse);

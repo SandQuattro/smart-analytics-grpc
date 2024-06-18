@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	AssistantService_UploadFile_FullMethodName            = "/assistants.AssistantService/UploadFile"
 	AssistantService_DownloadFile_FullMethodName          = "/assistants.AssistantService/DownloadFile"
 	AssistantService_DeleteFile_FullMethodName            = "/assistants.AssistantService/DeleteFile"
 	AssistantService_ListAssistantFiles_FullMethodName    = "/assistants.AssistantService/ListAssistantFiles"
@@ -40,6 +41,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AssistantServiceClient interface {
+	UploadFile(ctx context.Context, opts ...grpc.CallOption) (AssistantService_UploadFileClient, error)
 	DownloadFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (AssistantService_DownloadFileClient, error)
 	DeleteFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*DeletedObject, error)
 	ListAssistantFiles(ctx context.Context, in *AssistantRequest, opts ...grpc.CallOption) (*ListAssistantFilesResponse, error)
@@ -64,8 +66,42 @@ func NewAssistantServiceClient(cc grpc.ClientConnInterface) AssistantServiceClie
 	return &assistantServiceClient{cc}
 }
 
+func (c *assistantServiceClient) UploadFile(ctx context.Context, opts ...grpc.CallOption) (AssistantService_UploadFileClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[0], AssistantService_UploadFile_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &assistantServiceUploadFileClient{stream}
+	return x, nil
+}
+
+type AssistantService_UploadFileClient interface {
+	Send(*FileUploadRequest) error
+	CloseAndRecv() (*FileUploadResponse, error)
+	grpc.ClientStream
+}
+
+type assistantServiceUploadFileClient struct {
+	grpc.ClientStream
+}
+
+func (x *assistantServiceUploadFileClient) Send(m *FileUploadRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *assistantServiceUploadFileClient) CloseAndRecv() (*FileUploadResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(FileUploadResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *assistantServiceClient) DownloadFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (AssistantService_DownloadFileClient, error) {
-	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[0], AssistantService_DownloadFile_FullMethodName, opts...)
+	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[1], AssistantService_DownloadFile_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +205,7 @@ func (c *assistantServiceClient) CreateThreadRun(ctx context.Context, in *Create
 }
 
 func (c *assistantServiceClient) GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[1], AssistantService_GetThreadRuns_FullMethodName, opts...)
+	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[2], AssistantService_GetThreadRuns_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -240,6 +276,7 @@ func (c *assistantServiceClient) GetMessage(ctx context.Context, in *GetMessageR
 // All implementations must embed UnimplementedAssistantServiceServer
 // for forward compatibility
 type AssistantServiceServer interface {
+	UploadFile(AssistantService_UploadFileServer) error
 	DownloadFile(*FileRequest, AssistantService_DownloadFileServer) error
 	DeleteFile(context.Context, *FileRequest) (*DeletedObject, error)
 	ListAssistantFiles(context.Context, *AssistantRequest) (*ListAssistantFilesResponse, error)
@@ -261,6 +298,9 @@ type AssistantServiceServer interface {
 type UnimplementedAssistantServiceServer struct {
 }
 
+func (UnimplementedAssistantServiceServer) UploadFile(AssistantService_UploadFileServer) error {
+	return status.Errorf(codes.Unimplemented, "method UploadFile not implemented")
+}
 func (UnimplementedAssistantServiceServer) DownloadFile(*FileRequest, AssistantService_DownloadFileServer) error {
 	return status.Errorf(codes.Unimplemented, "method DownloadFile not implemented")
 }
@@ -314,6 +354,32 @@ type UnsafeAssistantServiceServer interface {
 
 func RegisterAssistantServiceServer(s grpc.ServiceRegistrar, srv AssistantServiceServer) {
 	s.RegisterService(&AssistantService_ServiceDesc, srv)
+}
+
+func _AssistantService_UploadFile_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AssistantServiceServer).UploadFile(&assistantServiceUploadFileServer{stream})
+}
+
+type AssistantService_UploadFileServer interface {
+	SendAndClose(*FileUploadResponse) error
+	Recv() (*FileUploadRequest, error)
+	grpc.ServerStream
+}
+
+type assistantServiceUploadFileServer struct {
+	grpc.ServerStream
+}
+
+func (x *assistantServiceUploadFileServer) SendAndClose(m *FileUploadResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *assistantServiceUploadFileServer) Recv() (*FileUploadRequest, error) {
+	m := new(FileUploadRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func _AssistantService_DownloadFile_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -631,6 +697,11 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "UploadFile",
+			Handler:       _AssistantService_UploadFile_Handler,
+			ClientStreams: true,
+		},
 		{
 			StreamName:    "DownloadFile",
 			Handler:       _AssistantService_DownloadFile_Handler,
