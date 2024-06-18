@@ -30,7 +30,7 @@ message FileRequest {
 
 message FileInfo {
   string name = 1;
-  string size = 2;
+  uint64 size = 2;
   string content_type = 3;
   map<string, string> headers = 4;
 }
