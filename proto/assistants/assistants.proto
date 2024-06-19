@@ -117,10 +117,8 @@ message File {
 message Annotations {
   string type = 1;
   string text = 2;
-  oneof file {
-    File file_citation = 3;
-    File file_path = 4;
-  }
+  optional File file_citation = 3;
+  optional File file_path = 4;
   uint32 start_index = 5;
   uint32 end_index = 6;
 }
