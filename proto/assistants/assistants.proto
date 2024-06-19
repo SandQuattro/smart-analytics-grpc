@@ -130,12 +130,12 @@ message TextContent {
 
 message ImageFileContent {
   string file_id = 1;
-  string detail = 2;
+  optional string detail = 2;
 }
 
 message ImageUrlContent {
   string url = 1;
-  string detail = 2;
+  optional string detail = 2;
 }
 
 message MessageContent {
