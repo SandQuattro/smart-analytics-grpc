@@ -159,7 +159,7 @@ message AssistantMessage {
   string object = 2;
   google.protobuf.Timestamp created_at = 3;
   string thread_id = 4;
-  string status = 5;
+  optional string status = 5;
   optional IncompleteDetails incomplete_details = 6;
   optional google.protobuf.Timestamp completed_at = 7;
   optional google.protobuf.Timestamp incomplete_at = 8;
