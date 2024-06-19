@@ -142,11 +142,9 @@ message ImageUrlContent {
 
 message MessageContent {
   string type = 1;
-  oneof content {
-    TextContent text = 2;
-    ImageFileContent image_file = 3;
-    ImageUrlContent image_url = 4;
-  }
+  optional TextContent text = 2;
+  optional ImageFileContent image_file = 3;
+  optional ImageUrlContent image_url = 4;
 }
 
 message Tools {
