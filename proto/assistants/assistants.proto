@@ -269,16 +269,21 @@ service AssistantService {
   rpc UploadFile(stream FileUploadRequest) returns (FileUploadResponse);
   rpc DownloadFile(FileRequest) returns (stream FileStreamResponse);
   rpc DeleteFile(FileRequest) returns (DeletedObject);
+
   rpc ListAssistantFiles(AssistantRequest) returns (ListAssistantFilesResponse);
   rpc DeleteAssistantFile(AssistantFileRequest) returns (DeletedObject);
   rpc LinkFileToAssistant(AssistantFileRequest) returns (AssistantFileData);
-  rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
+
   rpc GetThread(ThreadRequest) returns (AssistantObject);
+  rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
   rpc DeleteThread(ThreadRequest) returns (DeletedObject);
-  rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
+
   rpc GetThreadRuns(ThreadRequest) returns (stream ThreadRun);
+  rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
+
   rpc GetRunInformation(ThreadRunRequest) returns (ThreadRun);
+
   rpc ListThreadMessages(ThreadRequest) returns (ListAssistantMessagesResponse);
-  rpc CreateMessage(CreateMessageRequest) returns (AssistantMessage);
   rpc GetMessage(GetMessageRequest) returns (AssistantMessage);
+  rpc CreateMessage(CreateMessageRequest) returns (AssistantMessage);
 }
