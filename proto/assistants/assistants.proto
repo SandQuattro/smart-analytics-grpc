@@ -278,7 +278,7 @@ service AssistantService {
   rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
   rpc GetThreadRuns(ThreadRequest) returns (stream ThreadRun);
   rpc GetRunInformation(ThreadRunRequest) returns (ThreadRun);
-  rpc ListMessagesInThread(ThreadRequest) returns (ListAssistantMessagesResponse);
-  rpc CreateMessageInThread(CreateMessageRequest) returns (AssistantMessage);
+  rpc ListThreadMessages(ThreadRequest) returns (ListAssistantMessagesResponse);
+  rpc CreateMessage(CreateMessageRequest) returns (AssistantMessage);
   rpc GetMessage(GetMessageRequest) returns (AssistantMessage);
 }

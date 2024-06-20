@@ -20,21 +20,21 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AssistantService_UploadFile_FullMethodName            = "/assistants.AssistantService/UploadFile"
-	AssistantService_DownloadFile_FullMethodName          = "/assistants.AssistantService/DownloadFile"
-	AssistantService_DeleteFile_FullMethodName            = "/assistants.AssistantService/DeleteFile"
-	AssistantService_ListAssistantFiles_FullMethodName    = "/assistants.AssistantService/ListAssistantFiles"
-	AssistantService_DeleteAssistantFile_FullMethodName   = "/assistants.AssistantService/DeleteAssistantFile"
-	AssistantService_LinkFileToAssistant_FullMethodName   = "/assistants.AssistantService/LinkFileToAssistant"
-	AssistantService_CreateThread_FullMethodName          = "/assistants.AssistantService/CreateThread"
-	AssistantService_GetThread_FullMethodName             = "/assistants.AssistantService/GetThread"
-	AssistantService_DeleteThread_FullMethodName          = "/assistants.AssistantService/DeleteThread"
-	AssistantService_CreateThreadRun_FullMethodName       = "/assistants.AssistantService/CreateThreadRun"
-	AssistantService_GetThreadRuns_FullMethodName         = "/assistants.AssistantService/GetThreadRuns"
-	AssistantService_GetRunInformation_FullMethodName     = "/assistants.AssistantService/GetRunInformation"
-	AssistantService_ListMessagesInThread_FullMethodName  = "/assistants.AssistantService/ListMessagesInThread"
-	AssistantService_CreateMessageInThread_FullMethodName = "/assistants.AssistantService/CreateMessageInThread"
-	AssistantService_GetMessage_FullMethodName            = "/assistants.AssistantService/GetMessage"
+	AssistantService_UploadFile_FullMethodName          = "/assistants.AssistantService/UploadFile"
+	AssistantService_DownloadFile_FullMethodName        = "/assistants.AssistantService/DownloadFile"
+	AssistantService_DeleteFile_FullMethodName          = "/assistants.AssistantService/DeleteFile"
+	AssistantService_ListAssistantFiles_FullMethodName  = "/assistants.AssistantService/ListAssistantFiles"
+	AssistantService_DeleteAssistantFile_FullMethodName = "/assistants.AssistantService/DeleteAssistantFile"
+	AssistantService_LinkFileToAssistant_FullMethodName = "/assistants.AssistantService/LinkFileToAssistant"
+	AssistantService_CreateThread_FullMethodName        = "/assistants.AssistantService/CreateThread"
+	AssistantService_GetThread_FullMethodName           = "/assistants.AssistantService/GetThread"
+	AssistantService_DeleteThread_FullMethodName        = "/assistants.AssistantService/DeleteThread"
+	AssistantService_CreateThreadRun_FullMethodName     = "/assistants.AssistantService/CreateThreadRun"
+	AssistantService_GetThreadRuns_FullMethodName       = "/assistants.AssistantService/GetThreadRuns"
+	AssistantService_GetRunInformation_FullMethodName   = "/assistants.AssistantService/GetRunInformation"
+	AssistantService_ListThreadMessages_FullMethodName  = "/assistants.AssistantService/ListThreadMessages"
+	AssistantService_CreateMessage_FullMethodName       = "/assistants.AssistantService/CreateMessage"
+	AssistantService_GetMessage_FullMethodName          = "/assistants.AssistantService/GetMessage"
 )
 
 // AssistantServiceClient is the client API for AssistantService service.
@@ -53,8 +53,8 @@ type AssistantServiceClient interface {
 	CreateThreadRun(ctx context.Context, in *CreateThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
 	GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error)
 	GetRunInformation(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
-	ListMessagesInThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error)
-	CreateMessageInThread(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error)
+	ListThreadMessages(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error)
+	CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error)
 	GetMessage(ctx context.Context, in *GetMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error)
 }
 
@@ -245,18 +245,18 @@ func (c *assistantServiceClient) GetRunInformation(ctx context.Context, in *Thre
 	return out, nil
 }
 
-func (c *assistantServiceClient) ListMessagesInThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error) {
+func (c *assistantServiceClient) ListThreadMessages(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error) {
 	out := new(ListAssistantMessagesResponse)
-	err := c.cc.Invoke(ctx, AssistantService_ListMessagesInThread_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AssistantService_ListThreadMessages_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *assistantServiceClient) CreateMessageInThread(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error) {
+func (c *assistantServiceClient) CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error) {
 	out := new(AssistantMessage)
-	err := c.cc.Invoke(ctx, AssistantService_CreateMessageInThread_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AssistantService_CreateMessage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -288,8 +288,8 @@ type AssistantServiceServer interface {
 	CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error)
 	GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error
 	GetRunInformation(context.Context, *ThreadRunRequest) (*ThreadRun, error)
-	ListMessagesInThread(context.Context, *ThreadRequest) (*ListAssistantMessagesResponse, error)
-	CreateMessageInThread(context.Context, *CreateMessageRequest) (*AssistantMessage, error)
+	ListThreadMessages(context.Context, *ThreadRequest) (*ListAssistantMessagesResponse, error)
+	CreateMessage(context.Context, *CreateMessageRequest) (*AssistantMessage, error)
 	GetMessage(context.Context, *GetMessageRequest) (*AssistantMessage, error)
 	mustEmbedUnimplementedAssistantServiceServer()
 }
@@ -334,11 +334,11 @@ func (UnimplementedAssistantServiceServer) GetThreadRuns(*ThreadRequest, Assista
 func (UnimplementedAssistantServiceServer) GetRunInformation(context.Context, *ThreadRunRequest) (*ThreadRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRunInformation not implemented")
 }
-func (UnimplementedAssistantServiceServer) ListMessagesInThread(context.Context, *ThreadRequest) (*ListAssistantMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListMessagesInThread not implemented")
+func (UnimplementedAssistantServiceServer) ListThreadMessages(context.Context, *ThreadRequest) (*ListAssistantMessagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListThreadMessages not implemented")
 }
-func (UnimplementedAssistantServiceServer) CreateMessageInThread(context.Context, *CreateMessageRequest) (*AssistantMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMessageInThread not implemented")
+func (UnimplementedAssistantServiceServer) CreateMessage(context.Context, *CreateMessageRequest) (*AssistantMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMessage not implemented")
 }
 func (UnimplementedAssistantServiceServer) GetMessage(context.Context, *GetMessageRequest) (*AssistantMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMessage not implemented")
@@ -586,38 +586,38 @@ func _AssistantService_GetRunInformation_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AssistantService_ListMessagesInThread_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AssistantService_ListThreadMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ThreadRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AssistantServiceServer).ListMessagesInThread(ctx, in)
+		return srv.(AssistantServiceServer).ListThreadMessages(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AssistantService_ListMessagesInThread_FullMethodName,
+		FullMethod: AssistantService_ListThreadMessages_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssistantServiceServer).ListMessagesInThread(ctx, req.(*ThreadRequest))
+		return srv.(AssistantServiceServer).ListThreadMessages(ctx, req.(*ThreadRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AssistantService_CreateMessageInThread_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AssistantService_CreateMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateMessageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AssistantServiceServer).CreateMessageInThread(ctx, in)
+		return srv.(AssistantServiceServer).CreateMessage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AssistantService_CreateMessageInThread_FullMethodName,
+		FullMethod: AssistantService_CreateMessage_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssistantServiceServer).CreateMessageInThread(ctx, req.(*CreateMessageRequest))
+		return srv.(AssistantServiceServer).CreateMessage(ctx, req.(*CreateMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -684,12 +684,12 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AssistantService_GetRunInformation_Handler,
 		},
 		{
-			MethodName: "ListMessagesInThread",
-			Handler:    _AssistantService_ListMessagesInThread_Handler,
+			MethodName: "ListThreadMessages",
+			Handler:    _AssistantService_ListThreadMessages_Handler,
 		},
 		{
-			MethodName: "CreateMessageInThread",
-			Handler:    _AssistantService_CreateMessageInThread_Handler,
+			MethodName: "CreateMessage",
+			Handler:    _AssistantService_CreateMessage_Handler,
 		},
 		{
 			MethodName: "GetMessage",
