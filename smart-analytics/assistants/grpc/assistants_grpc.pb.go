@@ -29,12 +29,12 @@ const (
 	AssistantService_GetThread_FullMethodName           = "/assistants.AssistantService/GetThread"
 	AssistantService_CreateThread_FullMethodName        = "/assistants.AssistantService/CreateThread"
 	AssistantService_DeleteThread_FullMethodName        = "/assistants.AssistantService/DeleteThread"
-	AssistantService_GetThreadRuns_FullMethodName       = "/assistants.AssistantService/GetThreadRuns"
-	AssistantService_CreateThreadRun_FullMethodName     = "/assistants.AssistantService/CreateThreadRun"
-	AssistantService_GetRunInformation_FullMethodName   = "/assistants.AssistantService/GetRunInformation"
 	AssistantService_ListThreadMessages_FullMethodName  = "/assistants.AssistantService/ListThreadMessages"
 	AssistantService_GetMessage_FullMethodName          = "/assistants.AssistantService/GetMessage"
 	AssistantService_CreateMessage_FullMethodName       = "/assistants.AssistantService/CreateMessage"
+	AssistantService_GetThreadRuns_FullMethodName       = "/assistants.AssistantService/GetThreadRuns"
+	AssistantService_GetThreadRun_FullMethodName        = "/assistants.AssistantService/GetThreadRun"
+	AssistantService_CreateThreadRun_FullMethodName     = "/assistants.AssistantService/CreateThreadRun"
 )
 
 // AssistantServiceClient is the client API for AssistantService service.
@@ -50,12 +50,12 @@ type AssistantServiceClient interface {
 	GetThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*AssistantObject, error)
 	CreateThread(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AssistantObject, error)
 	DeleteThread(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*DeletedObject, error)
-	GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error)
-	CreateThreadRun(ctx context.Context, in *CreateThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
-	GetRunInformation(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
 	ListThreadMessages(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error)
 	GetMessage(ctx context.Context, in *GetMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error)
 	CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error)
+	GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error)
+	GetThreadRun(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
+	CreateThreadRun(ctx context.Context, in *CreateThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error)
 }
 
 type assistantServiceClient struct {
@@ -195,6 +195,33 @@ func (c *assistantServiceClient) DeleteThread(ctx context.Context, in *ThreadReq
 	return out, nil
 }
 
+func (c *assistantServiceClient) ListThreadMessages(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error) {
+	out := new(ListAssistantMessagesResponse)
+	err := c.cc.Invoke(ctx, AssistantService_ListThreadMessages_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *assistantServiceClient) GetMessage(ctx context.Context, in *GetMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error) {
+	out := new(AssistantMessage)
+	err := c.cc.Invoke(ctx, AssistantService_GetMessage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *assistantServiceClient) CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error) {
+	out := new(AssistantMessage)
+	err := c.cc.Invoke(ctx, AssistantService_CreateMessage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *assistantServiceClient) GetThreadRuns(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (AssistantService_GetThreadRunsClient, error) {
 	stream, err := c.cc.NewStream(ctx, &AssistantService_ServiceDesc.Streams[2], AssistantService_GetThreadRuns_FullMethodName, opts...)
 	if err != nil {
@@ -227,45 +254,18 @@ func (x *assistantServiceGetThreadRunsClient) Recv() (*ThreadRun, error) {
 	return m, nil
 }
 
+func (c *assistantServiceClient) GetThreadRun(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error) {
+	out := new(ThreadRun)
+	err := c.cc.Invoke(ctx, AssistantService_GetThreadRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *assistantServiceClient) CreateThreadRun(ctx context.Context, in *CreateThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error) {
 	out := new(ThreadRun)
 	err := c.cc.Invoke(ctx, AssistantService_CreateThreadRun_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *assistantServiceClient) GetRunInformation(ctx context.Context, in *ThreadRunRequest, opts ...grpc.CallOption) (*ThreadRun, error) {
-	out := new(ThreadRun)
-	err := c.cc.Invoke(ctx, AssistantService_GetRunInformation_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *assistantServiceClient) ListThreadMessages(ctx context.Context, in *ThreadRequest, opts ...grpc.CallOption) (*ListAssistantMessagesResponse, error) {
-	out := new(ListAssistantMessagesResponse)
-	err := c.cc.Invoke(ctx, AssistantService_ListThreadMessages_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *assistantServiceClient) GetMessage(ctx context.Context, in *GetMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error) {
-	out := new(AssistantMessage)
-	err := c.cc.Invoke(ctx, AssistantService_GetMessage_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *assistantServiceClient) CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*AssistantMessage, error) {
-	out := new(AssistantMessage)
-	err := c.cc.Invoke(ctx, AssistantService_CreateMessage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -285,12 +285,12 @@ type AssistantServiceServer interface {
 	GetThread(context.Context, *ThreadRequest) (*AssistantObject, error)
 	CreateThread(context.Context, *emptypb.Empty) (*AssistantObject, error)
 	DeleteThread(context.Context, *ThreadRequest) (*DeletedObject, error)
-	GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error
-	CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error)
-	GetRunInformation(context.Context, *ThreadRunRequest) (*ThreadRun, error)
 	ListThreadMessages(context.Context, *ThreadRequest) (*ListAssistantMessagesResponse, error)
 	GetMessage(context.Context, *GetMessageRequest) (*AssistantMessage, error)
 	CreateMessage(context.Context, *CreateMessageRequest) (*AssistantMessage, error)
+	GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error
+	GetThreadRun(context.Context, *ThreadRunRequest) (*ThreadRun, error)
+	CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error)
 	mustEmbedUnimplementedAssistantServiceServer()
 }
 
@@ -325,15 +325,6 @@ func (UnimplementedAssistantServiceServer) CreateThread(context.Context, *emptyp
 func (UnimplementedAssistantServiceServer) DeleteThread(context.Context, *ThreadRequest) (*DeletedObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteThread not implemented")
 }
-func (UnimplementedAssistantServiceServer) GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetThreadRuns not implemented")
-}
-func (UnimplementedAssistantServiceServer) CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateThreadRun not implemented")
-}
-func (UnimplementedAssistantServiceServer) GetRunInformation(context.Context, *ThreadRunRequest) (*ThreadRun, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRunInformation not implemented")
-}
 func (UnimplementedAssistantServiceServer) ListThreadMessages(context.Context, *ThreadRequest) (*ListAssistantMessagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListThreadMessages not implemented")
 }
@@ -342,6 +333,15 @@ func (UnimplementedAssistantServiceServer) GetMessage(context.Context, *GetMessa
 }
 func (UnimplementedAssistantServiceServer) CreateMessage(context.Context, *CreateMessageRequest) (*AssistantMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMessage not implemented")
+}
+func (UnimplementedAssistantServiceServer) GetThreadRuns(*ThreadRequest, AssistantService_GetThreadRunsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetThreadRuns not implemented")
+}
+func (UnimplementedAssistantServiceServer) GetThreadRun(context.Context, *ThreadRunRequest) (*ThreadRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetThreadRun not implemented")
+}
+func (UnimplementedAssistantServiceServer) CreateThreadRun(context.Context, *CreateThreadRunRequest) (*ThreadRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateThreadRun not implemented")
 }
 func (UnimplementedAssistantServiceServer) mustEmbedUnimplementedAssistantServiceServer() {}
 
@@ -529,63 +529,6 @@ func _AssistantService_DeleteThread_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AssistantService_GetThreadRuns_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ThreadRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(AssistantServiceServer).GetThreadRuns(m, &assistantServiceGetThreadRunsServer{stream})
-}
-
-type AssistantService_GetThreadRunsServer interface {
-	Send(*ThreadRun) error
-	grpc.ServerStream
-}
-
-type assistantServiceGetThreadRunsServer struct {
-	grpc.ServerStream
-}
-
-func (x *assistantServiceGetThreadRunsServer) Send(m *ThreadRun) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _AssistantService_CreateThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateThreadRunRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AssistantServiceServer).CreateThreadRun(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AssistantService_CreateThreadRun_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssistantServiceServer).CreateThreadRun(ctx, req.(*CreateThreadRunRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AssistantService_GetRunInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ThreadRunRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AssistantServiceServer).GetRunInformation(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AssistantService_GetRunInformation_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AssistantServiceServer).GetRunInformation(ctx, req.(*ThreadRunRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AssistantService_ListThreadMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ThreadRequest)
 	if err := dec(in); err != nil {
@@ -640,6 +583,63 @@ func _AssistantService_CreateMessage_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AssistantService_GetThreadRuns_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ThreadRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AssistantServiceServer).GetThreadRuns(m, &assistantServiceGetThreadRunsServer{stream})
+}
+
+type AssistantService_GetThreadRunsServer interface {
+	Send(*ThreadRun) error
+	grpc.ServerStream
+}
+
+type assistantServiceGetThreadRunsServer struct {
+	grpc.ServerStream
+}
+
+func (x *assistantServiceGetThreadRunsServer) Send(m *ThreadRun) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _AssistantService_GetThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ThreadRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AssistantServiceServer).GetThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AssistantService_GetThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AssistantServiceServer).GetThreadRun(ctx, req.(*ThreadRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AssistantService_CreateThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateThreadRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AssistantServiceServer).CreateThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AssistantService_CreateThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AssistantServiceServer).CreateThreadRun(ctx, req.(*CreateThreadRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AssistantService_ServiceDesc is the grpc.ServiceDesc for AssistantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -676,14 +676,6 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AssistantService_DeleteThread_Handler,
 		},
 		{
-			MethodName: "CreateThreadRun",
-			Handler:    _AssistantService_CreateThreadRun_Handler,
-		},
-		{
-			MethodName: "GetRunInformation",
-			Handler:    _AssistantService_GetRunInformation_Handler,
-		},
-		{
 			MethodName: "ListThreadMessages",
 			Handler:    _AssistantService_ListThreadMessages_Handler,
 		},
@@ -694,6 +686,14 @@ var AssistantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateMessage",
 			Handler:    _AssistantService_CreateMessage_Handler,
+		},
+		{
+			MethodName: "GetThreadRun",
+			Handler:    _AssistantService_GetThreadRun_Handler,
+		},
+		{
+			MethodName: "CreateThreadRun",
+			Handler:    _AssistantService_CreateThreadRun_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -185,8 +185,20 @@ message CreateThreadRunRequest {
   string assistant_id = 3;
 }
 
+message FileSearchTool {
+  int64 max_num_results = 2;
+}
+
+message FunctionTool {
+  string description = 1;
+  string name = 2;
+  google.protobuf.Struct parameters = 3;
+}
+
 message ThreadRunTools {
   string type = 1;
+  optional FileSearchTool file_search = 2;
+  optional FunctionTool function = 3;
 }
 
 message Function {
@@ -278,12 +290,11 @@ service AssistantService {
   rpc CreateThread(google.protobuf.Empty) returns (AssistantObject);
   rpc DeleteThread(ThreadRequest) returns (DeletedObject);
 
-  rpc GetThreadRuns(ThreadRequest) returns (stream ThreadRun);
-  rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
-
-  rpc GetRunInformation(ThreadRunRequest) returns (ThreadRun);
-
   rpc ListThreadMessages(ThreadRequest) returns (ListAssistantMessagesResponse);
   rpc GetMessage(GetMessageRequest) returns (AssistantMessage);
   rpc CreateMessage(CreateMessageRequest) returns (AssistantMessage);
+
+  rpc GetThreadRuns(ThreadRequest) returns (stream ThreadRun);
+  rpc GetThreadRun(ThreadRunRequest) returns (ThreadRun);
+  rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
 }
