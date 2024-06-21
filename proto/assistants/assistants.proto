@@ -271,9 +271,9 @@ message ThreadRun {
   optional uint32 max_prompt_tokens = 22;
   optional uint32 max_completion_tokens = 23;
   TruncationStrategy truncation_strategy = 24;
-  optional  ToolChoice tool_choice = 25;
+  optional google.protobuf.Struct tool_choice = 25;
   bool parallel_tool_calls = 26;
-  string    response_format = 27;
+  string response_format = 27;
 }
 
 // Сервис для работы с файлами
