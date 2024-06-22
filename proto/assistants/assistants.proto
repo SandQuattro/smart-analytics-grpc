@@ -266,8 +266,8 @@ message ThreadRun {
   repeated ThreadRunTools tools = 17;
   google.protobuf.Struct  metadata = 18;
   optional Usage usage = 19;
-  optional uint32 temperature = 20;
-  optional uint32 top_p = 21;
+  optional float temperature = 20;
+  optional float top_p = 21;
   optional uint32 max_prompt_tokens = 22;
   optional uint32 max_completion_tokens = 23;
   TruncationStrategy truncation_strategy = 24;
