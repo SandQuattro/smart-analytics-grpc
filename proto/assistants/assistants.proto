@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -271,7 +272,7 @@ message ThreadRun {
   optional uint32 max_prompt_tokens = 22;
   optional uint32 max_completion_tokens = 23;
   TruncationStrategy truncation_strategy = 24;
-  optional google.protobuf.Struct tool_choice = 25;
+  optional  google.protobuf.Any tool_choice = 25;
   bool parallel_tool_calls = 26;
   google.protobuf.Struct response_format = 27;
 }
