@@ -32,8 +32,18 @@ message UserInfo {
   string last_login_ip = 12;
 }
 
+message TokenRequest {
+  int64 userId = 1;
+}
+
+message TokenResponse {
+  string token = 1;
+  bool valid = 2;
+}
+
 // Сервис для работы с пользовательскими данными
 service UserService {
   rpc GetUserInfo(UserRequest) returns (UserInfo);
   rpc UpdateUserInfo(UserInfoUpdateRequest) returns (UserInfo);
+  rpc TokenRefresh(TokenRequest) returns (TokenResponse);
 }
