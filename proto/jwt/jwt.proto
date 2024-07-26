@@ -1,0 +1,19 @@
+// Сервис для работы с jwt токенами
+syntax = "proto3";
+
+option go_package = "smart-analytics/jwt/grpc";
+
+package jwt;
+
+message TokenRequest {
+  int64 userId = 1;
+}
+
+message TokenResponse {
+  string token = 1;
+  bool valid = 2;
+}
+
+service JwtService {
+  rpc TokenRefresh(TokenRequest) returns (TokenResponse);
+}

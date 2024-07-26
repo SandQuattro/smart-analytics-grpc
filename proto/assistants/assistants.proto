@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/any.proto";
-import "google/protobuf/struct.proto";
-import "google/protobuf/timestamp.proto";
-
 package assistants;
 
 option go_package = "smart-analytics/assistants/grpc";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
 
 message FileUploadRequest {
   oneof request {
@@ -299,3 +299,4 @@ service AssistantService {
   rpc GetThreadRun(ThreadRunRequest) returns (ThreadRun);
   rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
 }
+
