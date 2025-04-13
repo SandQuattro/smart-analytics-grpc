@@ -1,0 +1,12 @@
+// Сервис для работы с jwt токенами
+syntax = "proto3";
+
+package api.jwt;
+
+import "api/jwt/jwt_messages.proto";
+
+option go_package = "smart-analytics/assistants/grpc/protobuf/pkg/api/jwt";
+
+service JwtService {
+  rpc TokenRefresh(TokenRequest) returns (TokenResponse);
+}

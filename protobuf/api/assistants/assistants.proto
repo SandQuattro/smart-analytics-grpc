@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package assistants;
-
-option go_package = "smart-analytics/assistants/grpc";
+package api.assistants;
 
 import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+
+option go_package = "smart-analytics/assistants/grpc/protobuf/pkg/api/assistants";
 
 message FileUploadRequest {
   oneof request {
@@ -88,15 +88,15 @@ message ThreadRunRequest {
 message DeletedObject {
   string id = 1;
   string object = 2;
-  bool  deleted = 3;
+  bool deleted = 3;
 }
 
 // ответ AssistantObject
 message AssistantObject {
   string id = 1;
   string object = 2;
-  google.protobuf.Timestamp  createdAt = 3;
-  google.protobuf.Struct  metadata = 4;
+  google.protobuf.Timestamp createdAt = 3;
+  google.protobuf.Struct metadata = 4;
 }
 
 message GetMessageRequest {
@@ -175,9 +175,9 @@ message AssistantMessage {
 message ListAssistantMessagesResponse {
   string object = 1;
   repeated AssistantMessage data = 2;
-  string  first_id = 3;
-  string  last_id = 4;
-  bool  has_more = 5;
+  string first_id = 3;
+  string last_id = 4;
+  bool has_more = 5;
 }
 
 message CreateThreadRunRequest {
@@ -250,7 +250,7 @@ message ToolChoice {
 message ThreadRun {
   string id = 1;
   string object = 2;
-  google.protobuf.Timestamp  createdAt = 3;
+  google.protobuf.Timestamp createdAt = 3;
   string thread_id = 4;
   string assistant_id = 5;
   string status = 6;
@@ -265,14 +265,14 @@ message ThreadRun {
   string model = 15;
   string instructions = 16;
   repeated ThreadRunTools tools = 17;
-  google.protobuf.Struct  metadata = 18;
+  google.protobuf.Struct metadata = 18;
   optional Usage usage = 19;
   optional float temperature = 20;
   optional float top_p = 21;
   optional uint32 max_prompt_tokens = 22;
   optional uint32 max_completion_tokens = 23;
   TruncationStrategy truncation_strategy = 24;
-  optional  google.protobuf.Any tool_choice = 25;
+  optional google.protobuf.Any tool_choice = 25;
   bool parallel_tool_calls = 26;
   google.protobuf.Any response_format = 27;
 }
@@ -299,4 +299,3 @@ service AssistantService {
   rpc GetThreadRun(ThreadRunRequest) returns (ThreadRun);
   rpc CreateThreadRun(CreateThreadRunRequest) returns (ThreadRun);
 }
-

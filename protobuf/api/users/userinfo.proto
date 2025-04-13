@@ -1,10 +1,10 @@
 syntax = "proto3";
 
+package api.users;
+
 import "google/protobuf/timestamp.proto";
 
-option go_package = "smart-analytics/users/grpc";
-
-package users;
+option go_package = "smart-analytics/assistants/grpc/protobuf/pkg/api/users";
 
 message UserRequest {
   int64 id = 1;

@@ -1,0 +1,23 @@
+// Сервис для работы с jwt токенами
+syntax = "proto3";
+
+package api.jwt;
+
+import "buf/validate/validate.proto";
+
+option go_package = "smart-analytics/assistants/grpc/protobuf/pkg/api/jwt";
+
+message TokenRequest {
+  int64 userId = 1 [
+    json_name = "user_id",
+    (buf.validate.field).int64.gt = 0
+  ];
+}
+
+message TokenResponse {
+  string token = 1 [
+    json_name = "token",
+    (buf.validate.field).string = {min_len: 3}
+  ];
+  bool valid = 2;
+}
