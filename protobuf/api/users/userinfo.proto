@@ -3,34 +3,9 @@ syntax = "proto3";
 package api.users;
 
 import "google/protobuf/timestamp.proto";
+import "protobuf/api/users/userinfo_messages.proto";
 
 option go_package = "smart-analytics/assistants/grpc/protobuf/pkg/api/users";
-
-message UserRequest {
-  int64 id = 1;
-}
-
-message UserInfoUpdateRequest {
-  int64 id = 1;
-  string name = 2;
-  string nickname = 3;
-  string avatar = 4;
-}
-
-message UserInfo {
-  int64 id = 1;
-  string auth_system = 2;
-  string name = 3;
-  string given_name = 4;
-  string family_name = 5;
-  string avatar = 6;
-  string email = 7;
-  string role = 8;
-  bool guide_completed = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp verified_at = 11;
-  string last_login_ip = 12;
-}
 
 // Сервис для работы с пользовательскими данными
 service UserService {
