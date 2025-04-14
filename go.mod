@@ -3,8 +3,9 @@ module github.com/SandQuattro/smart-analytics-grpc
 go 1.22
 
 require (
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250307204501-0409229c3780.1
 	google.golang.org/grpc v1.64.0
-	google.golang.org/protobuf v1.34.1
+	google.golang.org/protobuf v1.36.6
 )
 
 require (

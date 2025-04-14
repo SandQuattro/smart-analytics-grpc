@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package api.users;
 
-import "google/protobuf/timestamp.proto";
 import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "smart-analytics/assistants/grpc/protobuf/pkg/api/users";
 
